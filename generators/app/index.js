@@ -1,115 +1,24 @@
+/**
+ * Created by parallels on 9/2/15.
+ */
 var Generators = require("yeoman-generator"),
-	Chalk = require("chalk"),
-	Fs = require("fs");
-var JSON = require('JSON');
+    Chalk = require("chalk"),
+    Fs = require("fs");
 
-
-var spawn = require('child_process').spawn;
-
-var options = {
-	appName: "",
-	path:"",
-	ports:[]
-};
 
 module.exports = Generators.Base.extend({
+    prompting: function(){
+        var done = this.async();
 
-	promptName: function () {
-		var done = this.async();
-		this.prompt({
-			type: 'input',
-			name: 'name',
-			message: 'Your project name',
-			default: this.appname
-		}, function (answers) {
-			this.log("name: " + answers.name);
-			options.appName = answers.name;
-			done();
-		}.bind(this));
+        Fs.readdir(this._sourceRoot.replace("/app/templates", ""), function(err, files){
+            this.log(Chalk.bold.yellow("Available commands"));
 
-
-	},
-
-	promptPort1: function(){
-		var done = this.async();
-		this.prompt({
-			type: 'input',
-			name: 'port',
-			message: 'Expose ports (first port). leave empty if no port',
-			default: '3000'
-		}, function (answers) {
-			this.log("first port: " + answers.port);
-			options.ports.push(answers.port);
-			done();
-		}.bind(this));
-	},
-
-	promptPort2: function(){
-		var done = this.async();
-		this.prompt({
-			type: 'input',
-			name: 'port',
-			message: 'Expose ports (debug port). leave empty if no port',
-			default: '5858'
-		}, function (answers) {
-			this.log("debug port: " + answers.port);
-			options.ports.push(answers.port);
-			done();
-		}.bind(this));
-	},
-
-	writing: function () {
-		this.fs.copyTpl(
-			this.templatePath("docker-compose.yml.template"),
-			this.destinationPath("docker-compose.yml"),
-			options
-		);
-		this.fs.copy(
-			this.templatePath("docker-shell.sh"),
-			this.destinationPath("docker-shell.sh")
-		);
-		this.fs.copyTpl(
-			this.templatePath("Dockerfile"),
-			this.destinationPath("Dockerfile"),
-			options
-		);
-		this.fs.copy(
-			this.templatePath(".gitignore"),
-			this.destinationPath(".gitignore")
-		);
-		this.fs.copyTpl(
-			this.templatePath("package.json"),
-			this.destinationPath("package.json"),
-			options
-		);
-		this.fs.copyTpl(
-			this.templatePath("README.md"),
-			this.destinationPath("README.md"),
-			options
-		);
-		this.fs.copyTpl(
-			this.templatePath("test/index.js"),
-			this.destinationPath("test/index.js"),
-			options
-		);
-		this.fs.copyTpl(
-			this.templatePath("src/index.js"),
-			this.destinationPath("src/index.js"),
-			options
-		);
-	},
-	install: function () {
-		this.installDependencies({
-			bower: false,
-			callback: function () {
-				console.log('Everything is ready!');
-			}
-		});
-	},
-	end: function(){
-		spawn('git', ['init'],{ stdio: 'inherit' });
-		spawn('git',  ['add', '--all'],{ stdio: 'inherit' });
-		spawn('git', ['commit', '-m', '"initial commit from generator"'],{ stdio: 'inherit' });
-		spawn('docker-compose', ['up'],{ stdio: 'inherit' });
-	}
+            for(var i=0; i<files.length; i++){
+                if(files[i] !== "app"){
+                    this.log(Chalk.bold.green("yo ") +  files[i]);
+                }
+            }
+            done();
+        }.bind(this));
+    }
 });
