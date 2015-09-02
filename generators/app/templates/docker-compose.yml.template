@@ -1,0 +1,10 @@
+plugin:
+ build: .
+ volumes:
+  - .:/opt/app/current
+ command: npm test <% if (ports.length>0) { %>
+ ports: <% ports.forEach(function(port){ %>
+  - "<%= port %>:<%= port %>" <% })} %>
+ environment:
+  DEBUG: true
+  NODE_ENV: development

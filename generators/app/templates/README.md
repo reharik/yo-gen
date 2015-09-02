@@ -1,0 +1,2 @@
+#<%= appName %>
+Your plugin description
