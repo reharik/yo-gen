@@ -6,7 +6,7 @@
   "homepage": "https://github.com/reharik/<%= appName %>#readme",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha -w --debug tests/unitTests/**/*.js"
+    "test": "mocha --require ./babelhook --opts ./tests/mocha.opts ./tests/unitTests/*.js"
   },
   "bugs": {
     "url": "https://github.com/reharik/<%= appName %>/issues"
