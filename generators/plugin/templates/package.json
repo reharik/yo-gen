@@ -1,12 +1,12 @@
 {
-  "name": "<%= appName %>",
+  "name": "<%= packageName %>",
   "version": "0.0.1",
   "private": false,
   "description": "<%= appName %>",
   "homepage": "https://github.com/reharik/<%= appName %>#readme",
-  "main": "src/plugin.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "mocha -w --debug test/**/*.js"
+    "test": "mocha -w --debug tests/unitTests/**/*.js"
   },
   "bugs": {
     "url": "https://github.com/reharik/<%= appName %>/issues"

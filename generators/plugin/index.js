@@ -26,8 +26,21 @@ module.exports = Generators.Base.extend({
 			options.appName = answers.name;
 			done();
 		}.bind(this));
+	},
 
-
+	promptPackageName: function () {
+		var done = this.async();
+		var packageName = this.appname.indexOf('_')>0 ? this.appname.split('_')[1].toLowerCase() : this.appname.toLowerCase();
+		this.prompt({
+			type: 'input',
+			name: 'packageName',
+			message: 'Your package name',
+			default: packageName
+		}, function (answers) {
+			this.log("name: " + answers.packageName);
+			options.packageName = answers.packageName;
+			done();
+		}.bind(this));
 	},
 
 	promptPort1: function(){
@@ -39,7 +52,9 @@ module.exports = Generators.Base.extend({
 			default: '3000'
 		}, function (answers) {
 			this.log("first port: " + answers.port);
-			options.ports.push(answers.port);
+			if(answers.port.length > 1) {
+				options.ports.push(answers.port);
+			}
 			done();
 		}.bind(this));
 	},
@@ -53,7 +68,9 @@ module.exports = Generators.Base.extend({
 			default: '5858'
 		}, function (answers) {
 			this.log("debug port: " + answers.port);
-			options.ports.push(answers.port);
+			if(answers.port.length > 1) {
+				options.ports.push(answers.port);
+			}
 			done();
 		}.bind(this));
 	},
@@ -88,8 +105,8 @@ module.exports = Generators.Base.extend({
 			options
 		);
 		this.fs.copyTpl(
-			this.templatePath("test/index.js"),
-			this.destinationPath("test/index.js"),
+			this.templatePath("tests/index.js"),
+			this.destinationPath("tests/index.js"),
 			options
 		);
 		this.fs.copyTpl(
