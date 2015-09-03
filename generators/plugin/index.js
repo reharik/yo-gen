@@ -30,7 +30,7 @@ module.exports = Generators.Base.extend({
 
 	promptPackageName: function () {
 		var done = this.async();
-		var packageName = this.appname.indexOf('_')>0 ? this.appname.split('_')[1].toLowerCase() : this.appname.toLowerCase();
+		var packageName = options.appName.indexOf('_')>0 ? options.appName.split('_')[1].toLowerCase() : options.appName.toLowerCase();
 		this.prompt({
 			type: 'input',
 			name: 'packageName',
@@ -48,7 +48,7 @@ module.exports = Generators.Base.extend({
 		this.prompt({
 			type: 'input',
 			name: 'port',
-			message: 'Expose ports (first port). leave empty if no port',
+			message: 'Expose ports (first port). one space if not needed',
 			default: '3000'
 		}, function (answers) {
 			this.log("first port: " + answers.port);
@@ -64,7 +64,7 @@ module.exports = Generators.Base.extend({
 		this.prompt({
 			type: 'input',
 			name: 'port',
-			message: 'Expose ports (debug port). leave empty if no port',
+			message: 'Expose ports (debug port). . one space if not needed',
 			default: '5858'
 		}, function (answers) {
 			this.log("debug port: " + answers.port);
@@ -76,23 +76,27 @@ module.exports = Generators.Base.extend({
 	},
 
 	writing: function () {
+		this.fs.copy(
+			this.templatePath("tests/mocha.opts"),
+			this.destinationPath("tests/mocha.opts")
+		);
+		this.fs.copy(
+			this.templatePath("babelhook.js"),
+			this.destinationPath("babelhook.js")
+		);
+		this.fs.copy(
+			this.templatePath(".gitignore"),
+			this.destinationPath(".gitignore")
+		);
 		this.fs.copyTpl(
 			this.templatePath("docker-compose.yml.template"),
 			this.destinationPath("docker-compose.yml"),
 			options
 		);
-		this.fs.copy(
-			this.templatePath("docker-shell.sh"),
-			this.destinationPath("docker-shell.sh")
-		);
 		this.fs.copyTpl(
 			this.templatePath("Dockerfile"),
 			this.destinationPath("Dockerfile"),
 			options
-		);
-		this.fs.copy(
-			this.templatePath(".gitignore"),
-			this.destinationPath(".gitignore")
 		);
 		this.fs.copyTpl(
 			this.templatePath("package.json"),
@@ -114,14 +118,6 @@ module.exports = Generators.Base.extend({
 			this.destinationPath("src/index.js"),
 			options
 		);
-	},
-	install: function () {
-		this.installDependencies({
-			bower: false,
-			callback: function () {
-				console.log('Everything is ready!');
-			}
-		});
 	},
 	end: function(){
 		spawn('git', ['init'],{ stdio: 'inherit' });

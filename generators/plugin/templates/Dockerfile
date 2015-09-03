@@ -3,14 +3,14 @@ FROM node:latest
 
 MAINTAINER reharik@gmail.com
 
-ENV PLUGIN_HOME /opt/app/current
+ENV PLUGIN_HOME /home/app/current
 
 RUN npm install mocha -g
 RUN npm install babel -g
 <% if (ports.length>0) { ports.forEach(function(port){ %>
 EXPOSE <%= port %><% })} %>
 
-RUN mkdir -p /opt/app/current
+RUN mkdir -p $PLUGIN_HOME
 
 WORKDIR $PLUGIN_HOME
 
